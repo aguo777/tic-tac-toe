@@ -1,24 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+
+import Board from 'components/Board';
+import { InitialBoard, BoardState, Player, play, Action } from 'game/state';
 
 function App() {
+  const [board, setBoard] = useState<BoardState>(InitialBoard);
+  const [player, setPlayer] = useState<Player>(Player.X);
+  const onAction = (action: Action) => {
+    const newBoard = play(board, action);
+    const newPlayer = player === Player.X ? Player.O : Player.X;
+    setBoard(newBoard);
+    setPlayer(newPlayer);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Tic tac toe</h1>
+      <h2>Current Player: {player}</h2>
+
+      <Board board={board} player={player} onAction={onAction} />
     </div>
   );
 }
