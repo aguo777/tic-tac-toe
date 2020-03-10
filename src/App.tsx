@@ -17,10 +17,16 @@ import { Agent } from 'agent/Agent';
 
 import 'styles/App.scss';
 import { RandomAgent } from 'agent/RandomAgent';
+import { MinmaxAgent } from 'agent/MinmaxAgent';
 
 const randomAgents = {
   [Player.X]: new RandomAgent(Player.X),
   [Player.O]: new RandomAgent(Player.O)
+};
+
+const minmaxAgents = {
+  [Player.X]: new MinmaxAgent(Player.X),
+  [Player.O]: new MinmaxAgent(Player.O)
 };
 
 function App() {
@@ -43,9 +49,9 @@ function App() {
 
   if (currentWinner === undefined) {
     if (player === agentX?.player) {
-      onAction(agentX.act(board));
+      setTimeout(onAction, 100, agentX.act(board));
     } else if (player === agentO?.player) {
-      onAction(agentO.act(board));
+      setTimeout(onAction, 100, agentO.act(board));
     }
   }
 
@@ -61,25 +67,19 @@ function App() {
           </Col>
         </Row>
         <Row className="players">
-          <Col sm={2}>
-            <Row>X</Row>
-            <Row>
-              <PlayerSelect
-                label={agentX?.name ?? 'Human'}
-                player={Player.X}
-                onSelect={(agent?: Agent) => setAgentX(agent)}
-              />
-            </Row>
+          <Col sm={3}>
+            <PlayerSelect
+              label={agentX?.name ?? 'Human (X)'}
+              player={Player.X}
+              onSelect={(agent?: Agent) => setAgentX(agent)}
+            />
           </Col>
-          <Col sm={2}>
-            <Row>O</Row>
-            <Row>
-              <PlayerSelect
-                label={agentO?.name ?? 'Human'}
-                player={Player.O}
-                onSelect={(agent?: Agent) => setAgentO(agent)}
-              />
-            </Row>
+          <Col sm={3}>
+            <PlayerSelect
+              label={agentO?.name ?? 'Human (O)'}
+              player={Player.O}
+              onSelect={(agent?: Agent) => setAgentO(agent)}
+            />
           </Col>
         </Row>
         <Row className="player">
@@ -114,12 +114,14 @@ interface PlayerSelectProps {
 
 function PlayerSelect({ label, player, onSelect }: PlayerSelectProps) {
   const randomAgent = randomAgents[player];
+  const minmaxAgent = minmaxAgents[player];
   return (
     <UncontrolledButtonDropdown>
       <DropdownToggle caret>{label}</DropdownToggle>
       <DropdownMenu>
-        <DropdownItem onClick={() => onSelect()}>Human</DropdownItem>
+        <DropdownItem onClick={() => onSelect()}>Human ({player})</DropdownItem>
         <DropdownItem onClick={() => onSelect(randomAgent)}>{randomAgent.name}</DropdownItem>
+        <DropdownItem onClick={() => onSelect(minmaxAgent)}>{minmaxAgent.name}</DropdownItem>
       </DropdownMenu>
     </UncontrolledButtonDropdown>
   );
