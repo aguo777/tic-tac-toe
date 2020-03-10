@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, Col, Row } from 'reactstrap';
+import { Helmet } from 'react-helmet';
 
 import Board from 'components/Board';
 import { InitialBoard, BoardState, play, Action, Player, winner } from 'game/state';
@@ -24,32 +25,37 @@ function App() {
   };
 
   return (
-    <Container className="app">
-      <Row className="title">
-        <Col>
-          <h1>Tic tac toe</h1>
-        </Col>
-      </Row>
-      <Row className="player">
-        <Col>
-          <h3>
-            {currentWinner === undefined && <>Current Player: {player}</>}
-            {currentWinner === null && <>It's a draw!</>}
-            {!!currentWinner && <>{currentWinner.player} has won the game!</>}
-          </h3>
-        </Col>
-      </Row>
-      <Row className="board">
-        <Col>
-          <Board board={board} player={player} winner={currentWinner} onAction={onAction} />
-        </Col>
-      </Row>
-      <Row className="buttons">
-        <Col>
-          <Button onClick={resetGame}>Reset Game</Button>
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <Helmet>
+        <title>Tic Tac Toe</title>
+      </Helmet>
+      <Container className="app">
+        <Row className="title">
+          <Col>
+            <h1>Tic tac toe</h1>
+          </Col>
+        </Row>
+        <Row className="player">
+          <Col>
+            <h3>
+              {currentWinner === undefined && <>Current Player: {player}</>}
+              {currentWinner === null && <>It's a draw!</>}
+              {!!currentWinner && <>{currentWinner.player} has won the game!</>}
+            </h3>
+          </Col>
+        </Row>
+        <Row className="board">
+          <Col>
+            <Board board={board} player={player} winner={currentWinner} onAction={onAction} />
+          </Col>
+        </Row>
+        <Row className="buttons">
+          <Col>
+            <Button onClick={resetGame}>Reset Game</Button>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 
