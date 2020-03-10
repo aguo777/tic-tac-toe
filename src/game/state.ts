@@ -1,3 +1,5 @@
+import { flatMap } from 'lodash';
+
 export enum Player {
   X = 'X',
   O = 'O'
@@ -33,6 +35,40 @@ export const InitialBoard: BoardState = [
   [SquareState.Empty, SquareState.Empty, SquareState.Empty],
   [SquareState.Empty, SquareState.Empty, SquareState.Empty]
 ];
+
+export function nextPlayer(state: BoardState): Player {
+  let numX = 0;
+  let numO = 0;
+  state.forEach(row =>
+    row.map(square => {
+      switch (square) {
+        case SquareState.X:
+          numX++;
+        case SquareState.O:
+          numO++;
+        default:
+          break;
+      }
+    })
+  );
+  if (numX <= numO) {
+    return Player.X;
+  } else if (numX === numO) {
+    return Player.O;
+  } else {
+    console.log({ state, numX, numO });
+    throw new Error('Invalid board state!');
+  }
+}
+
+export function validActions(state: BoardState): Action[] {
+  const player = nextPlayer(state);
+  const squares = flatMap(state, (boardRow, row) =>
+    boardRow.map((square, col) => ({ square, position: { row, col } }))
+  );
+  const validSquares = squares.filter(x => x.square === SquareState.Empty);
+  return validSquares.map(({ position }) => ({ player, position }));
+}
 
 export function play(state: BoardState, action: Action): BoardState {
   const {

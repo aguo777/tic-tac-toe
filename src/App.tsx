@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
-import { Button, Container, Col, Row, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import {
+  Button,
+  Container,
+  Col,
+  Row,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
+} from 'reactstrap';
 import { Helmet } from 'react-helmet';
 
 import Board from 'components/Board';
 import { InitialBoard, BoardState, play, Action, Player, winner } from 'game/state';
+import { Agent } from 'agent/Agent';
 
 import 'styles/App.scss';
+import { RandomAgent } from 'agent/RandomAgent';
 
 function App() {
   const [board, setBoard] = useState<BoardState>(InitialBoard);
   const [player, setPlayer] = useState<Player>(Player.X);
+  const [agent, setAgent] = useState<Agent | undefined>();
+
   const onAction = (action: Action) => {
     const newBoard = play(board, action);
     const newPlayer = player === Player.X ? Player.O : Player.X;
@@ -24,6 +37,10 @@ function App() {
     setPlayer(Player.X);
   };
 
+  if (currentWinner === undefined && agent && player === agent.player) {
+    onAction(agent.act(board));
+  }
+
   return (
     <>
       <Helmet>
@@ -34,6 +51,9 @@ function App() {
           <Col>
             <h1>Tic tac toe</h1>
           </Col>
+        </Row>
+        <Row className="players">
+          <Col>{agent ? 'AI' : 'Human'} (X) vs Human (O)</Col>
         </Row>
         <Row className="player">
           <Col>
@@ -54,17 +74,11 @@ function App() {
             <Button onClick={resetGame}>Reset Game</Button>
           </Col>
           <Col>
-          <UncontrolledButtonDropdown>
-              <DropdownToggle caret>
-                Play vs AI
-              </DropdownToggle>
+            <UncontrolledButtonDropdown>
+              <DropdownToggle caret>Play vs AI</DropdownToggle>
               <DropdownMenu>
-                <DropdownItem>
-                  Random
-                </DropdownItem>
-                <DropdownItem disabled>
-                  Learning
-                </DropdownItem>
+                <DropdownItem onClick={() => setAgent(new RandomAgent(Player.X))}>Random</DropdownItem>
+                <DropdownItem disabled>Learning</DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
           </Col>
