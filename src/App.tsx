@@ -33,7 +33,7 @@ function App() {
   const [board, setBoard] = useState<BoardState>(InitialBoard);
   const [agentX, setAgentX] = useState<Agent | undefined>();
   const [agentO, setAgentO] = useState<Agent | undefined>();
-
+  
   const onAction = (action: Action) => {
     const newBoard = play(board, action);
     setBoard(newBoard);

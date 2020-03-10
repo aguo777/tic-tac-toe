@@ -40,7 +40,7 @@ export function nextPlayer(state: BoardState): Player {
   let numX = 0;
   let numO = 0;
   state.forEach(row =>
-    row.map(square => {
+    row.forEach(square => {
       switch (square) {
         case SquareState.X:
           numX++;
