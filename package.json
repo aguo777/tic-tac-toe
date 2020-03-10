@@ -2,6 +2,7 @@
   "name": "tic-tac-toe",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://aguo777.github.io/tic-tac-toe",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -25,7 +26,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettier": "yarn run prettier-format --parser typescript \"src/**/*.{ts,tsx}\"",
-    "prettier-format": "./node_modules/.bin/prettier --single-quote --print-width 120 --write"
+    "prettier-format": "./node_modules/.bin/prettier --single-quote --print-width 120 --write",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -43,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "gh-pages": "^2.2.0",
     "prettier": "^1.19.1"
   }
 }
