@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Col, Row } from 'reactstrap';
+import { Button, Container, Col, Row, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Helmet } from 'react-helmet';
 
 import Board from 'components/Board';
@@ -52,6 +52,21 @@ function App() {
         <Row className="buttons">
           <Col>
             <Button onClick={resetGame}>Reset Game</Button>
+          </Col>
+          <Col>
+          <UncontrolledButtonDropdown>
+              <DropdownToggle caret>
+                Play vs AI
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem>
+                  Random
+                </DropdownItem>
+                <DropdownItem disabled>
+                  Learning
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledButtonDropdown>
           </Col>
         </Row>
       </Container>
