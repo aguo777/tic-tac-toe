@@ -35,13 +35,13 @@ function App() {
           <h3>
             {currentWinner === undefined && <>Current Player: {player}</>}
             {currentWinner === null && <>It's a draw!</>}
-            {!!currentWinner && <>{currentWinner} has won the game!</>}
+            {!!currentWinner && <>{currentWinner.player} has won the game!</>}
           </h3>
         </Col>
       </Row>
       <Row className="board">
         <Col>
-          <Board board={board} player={player} disabled={currentWinner !== undefined} onAction={onAction} />
+          <Board board={board} player={player} winner={currentWinner} onAction={onAction} />
         </Col>
       </Row>
       <Row className="buttons">

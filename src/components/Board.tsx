@@ -1,25 +1,27 @@
 import React from 'react';
 import Square from './Square';
-import { BoardState, Action, Player, SquareState } from 'game/state';
+import { BoardState, Action, Player, SquareState, Winner } from 'game/state';
 
 interface BoardProps {
   board: BoardState;
   player: Player;
-  disabled?: boolean;
+  winner?: Winner | null;
   onAction?: (action: Action) => void;
 }
 
-export default function Board({ board, player, disabled, onAction }: BoardProps) {
+export default function Board({ board, player, winner, onAction }: BoardProps) {
+  const isGameOver = winner !== undefined;
   return (
     <div>
-      {board.map((row, i) => (
-        <div key={i}>
-          {row.map((square, j) => (
+      {board.map((boardRow, row) => (
+        <div key={row}>
+          {boardRow.map((square, col) => (
             <Square
-              key={j + square}
+              key={col + square}
               square={square}
-              disabled={disabled || square !== SquareState.Empty}
-              onClick={() => onAction?.({ player, row: i, col: j })}
+              isPartOfWinner={winner?.triple.some(x => x.row === row && x.col === col)}
+              disabled={isGameOver || square !== SquareState.Empty}
+              onClick={() => onAction?.({ player, position: { row, col } })}
             />
           ))}
         </div>
