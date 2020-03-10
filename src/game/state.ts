@@ -44,16 +44,18 @@ export function nextPlayer(state: BoardState): Player {
       switch (square) {
         case SquareState.X:
           numX++;
+          break;
         case SquareState.O:
           numO++;
+          break;
         default:
           break;
       }
     })
   );
-  if (numX <= numO) {
+  if (numX === numO) {
     return Player.X;
-  } else if (numX === numO) {
+  } else if (numX === numO + 1) {
     return Player.O;
   } else {
     console.log({ state, numX, numO });

@@ -12,33 +12,41 @@ import {
 import { Helmet } from 'react-helmet';
 
 import Board from 'components/Board';
-import { InitialBoard, BoardState, play, Action, Player, winner } from 'game/state';
+import { InitialBoard, BoardState, play, Action, Player, winner, nextPlayer } from 'game/state';
 import { Agent } from 'agent/Agent';
 
 import 'styles/App.scss';
 import { RandomAgent } from 'agent/RandomAgent';
 
+const randomAgents = {
+  [Player.X]: new RandomAgent(Player.X),
+  [Player.O]: new RandomAgent(Player.O)
+};
+
 function App() {
   const [board, setBoard] = useState<BoardState>(InitialBoard);
-  const [player, setPlayer] = useState<Player>(Player.X);
-  const [agent, setAgent] = useState<Agent | undefined>();
+  const [agentX, setAgentX] = useState<Agent | undefined>();
+  const [agentO, setAgentO] = useState<Agent | undefined>();
 
   const onAction = (action: Action) => {
     const newBoard = play(board, action);
-    const newPlayer = player === Player.X ? Player.O : Player.X;
     setBoard(newBoard);
-    setPlayer(newPlayer);
   };
 
   const currentWinner = winner(board);
 
+  const player = nextPlayer(board);
+
   const resetGame = () => {
     setBoard(InitialBoard);
-    setPlayer(Player.X);
   };
 
-  if (currentWinner === undefined && agent && player === agent.player) {
-    onAction(agent.act(board));
+  if (currentWinner === undefined) {
+    if (player === agentX?.player) {
+      onAction(agentX.act(board));
+    } else if (player === agentO?.player) {
+      onAction(agentO.act(board));
+    }
   }
 
   return (
@@ -53,7 +61,26 @@ function App() {
           </Col>
         </Row>
         <Row className="players">
-          <Col>{agent ? 'AI' : 'Human'} (X) vs Human (O)</Col>
+          <Col sm={2}>
+            <Row>X</Row>
+            <Row>
+              <PlayerSelect
+                label={agentX?.name ?? 'Human'}
+                player={Player.X}
+                onSelect={(agent?: Agent) => setAgentX(agent)}
+              />
+            </Row>
+          </Col>
+          <Col sm={2}>
+            <Row>O</Row>
+            <Row>
+              <PlayerSelect
+                label={agentO?.name ?? 'Human'}
+                player={Player.O}
+                onSelect={(agent?: Agent) => setAgentO(agent)}
+              />
+            </Row>
+          </Col>
         </Row>
         <Row className="player">
           <Col>
@@ -73,18 +100,28 @@ function App() {
           <Col>
             <Button onClick={resetGame}>Reset Game</Button>
           </Col>
-          <Col>
-            <UncontrolledButtonDropdown>
-              <DropdownToggle caret>Play vs AI</DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem onClick={() => setAgent(new RandomAgent(Player.X))}>Random</DropdownItem>
-                <DropdownItem disabled>Learning</DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown>
-          </Col>
         </Row>
       </Container>
     </>
+  );
+}
+
+interface PlayerSelectProps {
+  label: string;
+  player: Player;
+  onSelect: (agent?: Agent) => void;
+}
+
+function PlayerSelect({ label, player, onSelect }: PlayerSelectProps) {
+  const randomAgent = randomAgents[player];
+  return (
+    <UncontrolledButtonDropdown>
+      <DropdownToggle caret>{label}</DropdownToggle>
+      <DropdownMenu>
+        <DropdownItem onClick={() => onSelect()}>Human</DropdownItem>
+        <DropdownItem onClick={() => onSelect(randomAgent)}>{randomAgent.name}</DropdownItem>
+      </DropdownMenu>
+    </UncontrolledButtonDropdown>
   );
 }
 
