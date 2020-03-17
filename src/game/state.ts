@@ -63,6 +63,10 @@ export function nextPlayer(state: BoardState): Player {
   }
 }
 
+export function hash(state: BoardState): string {
+  return flatMap(state, x => x.map(y => y)).join();
+}
+
 export function validActions(state: BoardState): Action[] {
   const player = nextPlayer(state);
   const squares = flatMap(state, (boardRow, row) =>

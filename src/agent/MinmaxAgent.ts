@@ -1,18 +1,7 @@
-import { maxBy, minBy } from 'lodash';
+import { maxBy, minBy, memoize } from 'lodash';
 
 import { Agent } from './Agent';
-import { BoardState, Action, Player, winner, validActions, play, nextPlayer } from 'game/state';
-
-export class MinmaxAgent extends Agent {
-  constructor(player: Player) {
-    super(player);
-    this.name = `Minmax AI (${player})`;
-  }
-
-  act(state: BoardState): Action {
-    return value(state)[1]!;
-  }
-}
+import { BoardState, Action, Player, winner, validActions, play, nextPlayer, hash } from 'game/state';
 
 /**
  * Returns the min-max value of the board (1 if X wins, -1 if O wins, 0 if draw)
@@ -37,5 +26,21 @@ function value(state: BoardState): [number, Action | null] {
     } else {
       return minBy(frontier, x => x[0])!;
     }
+  }
+}
+
+const memoizedValue = memoize(value, state => hash(state));
+
+/**
+ * Agent that plays optimally using min-max strategy.
+ */
+export class MinmaxAgent extends Agent {
+  constructor(player: Player) {
+    super(player);
+    this.name = `Minmax AI (${player})`;
+  }
+
+  act(state: BoardState): Action {
+    return memoizedValue(state)[1]!;
   }
 }
