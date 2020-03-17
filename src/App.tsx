@@ -30,25 +30,27 @@ const minmaxAgents = {
 };
 
 function App() {
+  // Board
   const [board, setBoard] = useState<BoardState>(InitialBoard);
-  const [agentX, setAgentX] = useState<Agent | undefined>();
-  const [agentO, setAgentO] = useState<Agent | undefined>();
-  
+  const currentWinner = winner(board);
+  const winningPlayer = currentWinner && currentWinner.player;
+  const player = nextPlayer(board);
+
   const onAction = (action: Action) => {
     const newBoard = play(board, action);
     setBoard(newBoard);
   };
 
-  const currentWinner = winner(board);
-
-  const player = nextPlayer(board);
-
   const resetGame = () => {
     setBoard(InitialBoard);
   };
 
+  // Agent
+  const [agentX, setAgentX] = useState<Agent | undefined>();
+  const [agentO, setAgentO] = useState<Agent | undefined>();
+
   useEffect(() => {
-    if (currentWinner === undefined) {
+    if (winningPlayer === undefined) {
       if (player === agentX?.player) {
         setTimeout(onAction, 1, agentX.act(board));
       } else if (player === agentO?.player) {
@@ -56,6 +58,38 @@ function App() {
       }
     }
   });
+
+  // Stats
+  const [winsX, setWinsX] = useState(0);
+  const [winsO, setWinsO] = useState(0);
+  const [draws, setDraws] = useState(0);
+
+  const total = winsX + winsO + draws;
+  const pctWinsX = winsX / total;
+  const pctWinsO = winsO / total;
+  const pctDraws = draws / total;
+
+  const resetStats = () => {
+    setWinsX(0);
+    setWinsO(0);
+    setDraws(0);
+  };
+
+  useEffect(() => {
+    switch (winningPlayer) {
+      case Player.X:
+        setWinsX(x => x + 1);
+        break;
+      case Player.O:
+        setWinsO(x => x + 1);
+        break;
+      case null:
+        setDraws(x => x + 1);
+        break;
+      default:
+        break;
+    }
+  }, [winningPlayer]);
 
   return (
     <>
@@ -87,9 +121,9 @@ function App() {
         <Row className="player">
           <Col>
             <h3>
-              {currentWinner === undefined && <>Current Player: {player}</>}
-              {currentWinner === null && <>It's a draw!</>}
-              {!!currentWinner && <>{currentWinner.player} has won the game!</>}
+              {winningPlayer === undefined && <>Current Player: {player}</>}
+              {winningPlayer === null && <>It's a draw!</>}
+              {!!winningPlayer && <>{winningPlayer} has won the game!</>}
             </h3>
           </Col>
         </Row>
@@ -101,6 +135,20 @@ function App() {
         <Row className="buttons">
           <Col>
             <Button onClick={resetGame}>Reset Game</Button>
+            <Button onClick={resetStats}>Reset Stats</Button>
+          </Col>
+        </Row>
+        <Row className="stats">
+          <Col>
+            <Row>
+              X wins: {winsX} {!isNaN(pctWinsX) && `(${(pctWinsX * 100).toFixed(2)} %)`}
+            </Row>
+            <Row>
+              O wins: {winsO} {!isNaN(pctWinsO) && `(${(pctWinsO * 100).toFixed(2)} %)`}
+            </Row>
+            <Row>
+              Draws: {draws} {!isNaN(pctDraws) && `(${(pctDraws * 100).toFixed(2)} %)`}
+            </Row>
           </Col>
         </Row>
       </Container>
