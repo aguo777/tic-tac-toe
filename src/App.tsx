@@ -179,7 +179,7 @@ function PlayerSelect({ label, player, onSelect }: PlayerSelectProps) {
         <DropdownItem onClick={() => onSelect()}>Human ({player})</DropdownItem>
         <DropdownItem onClick={() => onSelect(randomAgent)}>{randomAgent.name}</DropdownItem>
         <DropdownItem onClick={() => onSelect(minmaxAgent)}>{minmaxAgent.name}</DropdownItem>
-  <DropdownItem onClick={() => onSelect(learningAgent)}>{learningAgent.name}</DropdownItem>
+  <DropdownItem disabled onClick={() => onSelect(learningAgent)}>{learningAgent.name}</DropdownItem>
       </DropdownMenu>
     </UncontrolledButtonDropdown>
   );
