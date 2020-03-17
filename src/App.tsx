@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Container,
@@ -47,13 +47,15 @@ function App() {
     setBoard(InitialBoard);
   };
 
-  if (currentWinner === undefined) {
-    if (player === agentX?.player) {
-      setTimeout(onAction, 100, agentX.act(board));
-    } else if (player === agentO?.player) {
-      setTimeout(onAction, 100, agentO.act(board));
+  useEffect(() => {
+    if (currentWinner === undefined) {
+      if (player === agentX?.player) {
+        setTimeout(onAction, 1, agentX.act(board));
+      } else if (player === agentO?.player) {
+        setTimeout(onAction, 1, agentO.act(board));
+      }
     }
-  }
+  });
 
   return (
     <>
