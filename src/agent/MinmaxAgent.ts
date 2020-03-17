@@ -1,7 +1,7 @@
 import { maxBy, minBy, memoize } from 'lodash';
 
 import { Agent } from './Agent';
-import { BoardState, Action, Player, winner, validActions, play, nextPlayer, hash } from 'game/state';
+import { BoardState, Action, Player, winner, validActions, play, nextPlayer } from 'game/state';
 
 /**
  * Returns the min-max value of the board (1 if X wins, -1 if O wins, 0 if draw)
@@ -29,7 +29,7 @@ function value(state: BoardState): [number, Action | null] {
   }
 }
 
-const memoizedValue = memoize(value, state => hash(state));
+const memoizedValue = memoize(value);
 
 /**
  * Agent that plays optimally using min-max strategy.

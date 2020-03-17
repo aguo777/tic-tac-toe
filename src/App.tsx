@@ -17,6 +17,7 @@ import { Agent } from 'agent/Agent';
 
 import 'styles/App.scss';
 import { RandomAgent } from 'agent/RandomAgent';
+import { LearningAgent } from 'agent/LearningAgent';
 import { MinmaxAgent } from 'agent/MinmaxAgent';
 
 const randomAgents = {
@@ -27,6 +28,11 @@ const randomAgents = {
 const minmaxAgents = {
   [Player.X]: new MinmaxAgent(Player.X),
   [Player.O]: new MinmaxAgent(Player.O)
+};
+
+const learningAgents = {
+  [Player.X]: new LearningAgent(Player.X),
+  [Player.O]: new LearningAgent(Player.O)
 };
 
 function App() {
@@ -165,6 +171,7 @@ interface PlayerSelectProps {
 function PlayerSelect({ label, player, onSelect }: PlayerSelectProps) {
   const randomAgent = randomAgents[player];
   const minmaxAgent = minmaxAgents[player];
+  const learningAgent = learningAgents[player];
   return (
     <UncontrolledButtonDropdown>
       <DropdownToggle caret>{label}</DropdownToggle>
@@ -172,6 +179,7 @@ function PlayerSelect({ label, player, onSelect }: PlayerSelectProps) {
         <DropdownItem onClick={() => onSelect()}>Human ({player})</DropdownItem>
         <DropdownItem onClick={() => onSelect(randomAgent)}>{randomAgent.name}</DropdownItem>
         <DropdownItem onClick={() => onSelect(minmaxAgent)}>{minmaxAgent.name}</DropdownItem>
+  <DropdownItem onClick={() => onSelect(learningAgent)}>{learningAgent.name}</DropdownItem>
       </DropdownMenu>
     </UncontrolledButtonDropdown>
   );
